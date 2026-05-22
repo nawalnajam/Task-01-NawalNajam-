@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PageTurn — Categories</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .cat-big-grid {
+      display: grid; grid-template-columns: 1fr; gap: 1.25rem;
+    }
+    .cat-big-card {
+      background: var(--white); border-radius: var(--radius-lg);
+      border: 1.5px solid var(--moonlit-dark);
+      overflow: hidden; cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .cat-big-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(165,149,111,0.2); }
+    .cat-card-banner {
+      height: 100px; display: flex; align-items: center;
+      padding: 0 1.5rem; gap: 1rem;
+    }
+    .cat-emoji { font-size: 2.5rem; }
+    .cat-card-title {
+      font-family: 'Montserrat', sans-serif; font-weight: 700;
+      font-size: 1.2rem; color: var(--white);
+    }
+    .cat-card-body { padding: 1rem 1.25rem; }
+    .cat-card-desc { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem; }
+    .cat-stats { display: flex; gap: 1.5rem; }
+    .cat-stat { font-size: 0.78rem; color: var(--text-muted); }
+    .cat-stat strong { font-weight: 700; color: var(--text-primary); display: block; font-size: 1rem; }
+    .cat-tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.85rem; }
+    .cat-tag {
+      background: var(--moonlit); border-radius: 50px;
+      font-size: 0.72rem; font-weight: 600; padding: 0.25rem 0.65rem;
+      color: var(--text-secondary);
+    }
+    @media (min-width: 768px) { .cat-big-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { .cat-big-grid { grid-template-columns: repeat(3, 1fr); } }
+  </style>
+</head>
+<body>
+
+<header>
+  <nav class="nav-container" aria-label="Main navigation">
+    <a href="index.html" class="nav-logo">Page<span>Turn</span></a>
+    <ul class="nav-links">
+      <li><a href="browse.html">Browse</a></li>
+      <li><a href="categories.html" class="active">Categories</a></li>
+      <li><a href="authors.html">Authors</a></li>
+      <li><a href="new-arrivals.html">New Arrivals</a></li>
+      <li><a href="#" class="nav-cta">Start Reading</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <nav class="mobile-menu" id="mobile-menu">
+    <a href="browse.html">Browse</a>
+    <a href="categories.html">Categories</a>
+    <a href="authors.html">Authors</a>
+    <a href="new-arrivals.html">New Arrivals</a>
+    <a href="#" class="nav-cta" style="text-align:center;padding:0.6rem;border-radius:6px;">Start Reading</a>
+  </nav>
+</header>
+
+<section class="page-hero" aria-labelledby="cat-heading">
+  <div class="page-hero-inner">
+    <h1 id="cat-heading">Explore by <em>Category</em></h1>
+    <p>120+ genres to suit every mood, interest, and curiosity.</p>
+  </div>
+</section>
+
+<div class="page-wrap">
+  <div style="margin-bottom:1.5rem;">
+    <h2 class="section-title">All Categories</h2>
+    <p class="section-sub">Click any category to browse its collection</p>
+    <div class="filter-bar" id="alpha-filter">
+      <button class="pill active" onclick="setFilter('all', this)">All</button>
+      <button class="pill" onclick="setFilter('Fiction', this)">Fiction</button>
+      <button class="pill" onclick="setFilter('Non-Fiction', this)">Non-Fiction</button>
+      <button class="pill" onclick="setFilter('Science', this)">Science</button>
+      <button class="pill" onclick="setFilter('History', this)">History</button>
+      <button class="pill" onclick="setFilter('Wellness', this)">Wellness</button>
+    </div>
+  </div>
+  <div class="cat-big-grid" id="cat-grid"></div>
+</div>
+
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand"><div class="footer-logo">Page<span>Turn</span></div><p>A warm, curated digital library for curious minds.</p></div>
+    <div class="footer-col"><h4>Explore</h4><ul><li><a href="new-arrivals.html">New Arrivals</a></li><li><a href="browse.html">Bestsellers</a></li><li><a href="browse.html">Free Books</a></li></ul></div>
+    <div class="footer-col"><h4>Company</h4><ul><li><a href="authors.html">Authors</a></li><li><a href="#">Blog</a></li><li><a href="#">About</a></li></ul></div>
+    <div class="footer-col"><h4>Support</h4><ul><li><a href="#">Help Center</a></li><li><a href="#">Privacy</a></li><li><a href="#">Contact</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">© 2025 PageTurn Digital Library. Crafted with care.</div>
+</footer>
+
+<script>
+const categories = [
+  { name: "Literary Fiction", emoji: "📖", bg: "#7A6B4E", books: 12340, authors: 890, free: 3200, type: "Fiction", tags: ["Drama", "Contemporary", "Coming-of-Age", "Magical Realism"], desc: "Stories that explore the human condition through rich prose and complex characters." },
+  { name: "Science Fiction", emoji: "🚀", bg: "#4A7A9B", books: 8750, authors: 620, free: 2100, type: "Science", tags: ["Dystopia", "Space Opera", "Cyberpunk", "Time Travel"], desc: "Explore futures, alien worlds, and technologies that push imagination to its limits." },
+  { name: "Mystery & Thriller", emoji: "🔍", bg: "#6B4A6E", books: 9200, authors: 710, free: 2800, type: "Fiction", tags: ["Crime", "Suspense", "Detective", "Noir"], desc: "Page-turning plots with unexpected twists and unforgettable detective minds." },
+  { name: "Historical Fiction", emoji: "🏛️", bg: "#8B6E4A", books: 6400, authors: 480, free: 1900, type: "History", tags: ["Ancient", "Medieval", "World War", "Colonial"], desc: "Vivid recreations of the past, blending real events with compelling fictional narratives." },
+  { name: "Self-Help & Growth", emoji: "🌱", bg: "#4A7A5E", books: 5800, authors: 390, free: 2400, type: "Wellness", tags: ["Productivity", "Mindfulness", "Finance", "Habits"], desc: "Practical wisdom and actionable strategies to live a more intentional, fulfilling life." },
+  { name: "Biography & Memoir", emoji: "✍️", bg: "#7A4A4A", books: 4300, authors: 3100, free: 1600, type: "Non-Fiction", tags: ["Autobiography", "True Story", "Celebrity", "Politics"], desc: "Real lives, real stories — told with honesty, courage, and remarkable detail." },
+  { name: "Science & Technology", emoji: "🔬", bg: "#4A5E7A", books: 4680, authors: 340, free: 1800, type: "Science", tags: ["AI", "Physics", "Biology", "Engineering"], desc: "Accessible explorations of the discoveries and inventions reshaping our world." },
+  { name: "Romance", emoji: "💛", bg: "#9B6B6B", books: 6750, authors: 510, free: 2900, type: "Fiction", tags: ["Contemporary", "Historical", "Fantasy", "Young Adult"], desc: "Heartfelt stories of love, loss, and connection across every time and place." },
+  { name: "World History", emoji: "🌍", bg: "#5E7A4A", books: 3120, authors: 290, free: 1200, type: "History", tags: ["Ancient Civilizations", "Modern Era", "Wars", "Empires"], desc: "From ancient empires to modern revolutions — history told with depth and clarity." },
+  { name: "Children & YA", emoji: "⭐", bg: "#7A6B9B", books: 7800, authors: 820, free: 3900, type: "Fiction", tags: ["Middle Grade", "Young Adult", "Picture Books", "Fantasy"], desc: "Stories that spark imagination and build lifelong reading habits in young minds." },
+  { name: "Poetry & Literature", emoji: "🌸", bg: "#9B7A6B", books: 2400, authors: 1800, free: 1400, type: "Non-Fiction", tags: ["Classic", "Modern", "Haiku", "Spoken Word"], desc: "Verse that captures emotions and moments language alone cannot fully hold." },
+  { name: "Health & Wellness", emoji: "🧘", bg: "#4A8B7A", books: 3900, authors: 260, free: 1700, type: "Wellness", tags: ["Nutrition", "Mental Health", "Fitness", "Sleep"], desc: "Evidence-backed guidance for a healthier body, sharper mind, and calmer spirit." },
+];
+
+let currentFilter = "all";
+function setFilter(f, el) {
+  currentFilter = f;
+  document.querySelectorAll("#alpha-filter .pill").forEach(p => p.classList.remove("active"));
+  el.classList.add("active");
+  renderCats();
+}
+
+function renderCats() {
+  const data = currentFilter === "all" ? categories : categories.filter(c => c.type === currentFilter);
+  document.getElementById("cat-grid").innerHTML = data.map(c => `
+    <article class="cat-big-card" tabindex="0" aria-label="${c.name}">
+      <div class="cat-card-banner" style="background:${c.bg};">
+        <span class="cat-emoji">${c.emoji}</span>
+        <span class="cat-card-title">${c.name}</span>
+      </div>
+      <div class="cat-card-body">
+        <p class="cat-card-desc">${c.desc}</p>
+        <div class="cat-stats">
+          <div class="cat-stat"><strong>${c.books.toLocaleString()}</strong>Books</div>
+          <div class="cat-stat"><strong>${c.authors.toLocaleString()}</strong>Authors</div>
+          <div class="cat-stat"><strong>${c.free.toLocaleString()}</strong>Free</div>
+        </div>
+        <div class="cat-tag-row">${c.tags.map(t => `<span class="cat-tag">${t}</span>`).join("")}</div>
+      </div>
+    </article>`).join("");
+}
+
+document.getElementById("hamburger").addEventListener("click", () => {
+  document.getElementById("mobile-menu").classList.toggle("open");
+});
+renderCats();
+</script>
+</body>
+</html>

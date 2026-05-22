@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PageTurn — New Arrivals</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .arrivals-layout { display: grid; grid-template-columns: 1fr; gap: 2rem; }
+    .new-book-card {
+      background: var(--white); border-radius: var(--radius-lg);
+      border: 1.5px solid var(--moonlit-dark); overflow: hidden;
+      cursor: pointer; transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .new-book-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(165,149,111,0.2); }
+    .new-book-banner {
+      height: 140px; display: flex; align-items: center;
+      justify-content: center; font-size: 4rem; position: relative;
+    }
+    .new-label {
+      position: absolute; top: 10px; left: 10px;
+      background: var(--ethereal); color: var(--mocha-dark);
+      font-family: 'Montserrat', sans-serif; font-size: 0.65rem; font-weight: 700;
+      padding: 0.2rem 0.6rem; border-radius: 50px; letter-spacing: 0.08em;
+    }
+    .date-label {
+      position: absolute; top: 10px; right: 10px;
+      background: rgba(0,0,0,0.35); color: var(--white);
+      font-size: 0.68rem; font-weight: 600; padding: 0.2rem 0.6rem;
+      border-radius: 50px;
+    }
+    .new-book-body { padding: 1rem 1.1rem 1.1rem; }
+    .new-book-genre { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--mocha); margin-bottom: 0.3rem; }
+    .new-book-title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.98rem; color: var(--text-primary); margin-bottom: 0.2rem; }
+    .new-book-author { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.6rem; }
+    .new-book-desc { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.55; margin-bottom: 0.85rem; }
+    .new-book-footer { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+    .read-btn {
+      background: var(--mocha); color: var(--white);
+      border: none; border-radius: var(--radius-sm);
+      padding: 0.45rem 1rem; font-family: 'Montserrat', sans-serif;
+      font-weight: 700; font-size: 0.8rem; cursor: pointer;
+      transition: background var(--transition);
+    }
+    .read-btn:hover { background: var(--mocha-dark); }
+    .wishlist-btn {
+      background: none; border: 1.5px solid var(--moonlit-dark);
+      border-radius: var(--radius-sm); padding: 0.42rem 0.9rem;
+      font-family: 'Montserrat', sans-serif; font-size: 0.8rem; font-weight: 600;
+      color: var(--text-secondary); cursor: pointer; transition: all var(--transition);
+    }
+    .wishlist-btn:hover, .wishlist-btn.saved { border-color: var(--mocha); color: var(--mocha); }
+    /* Timeline strip */
+    .timeline-strip { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.5rem; margin-bottom: 1.5rem; scrollbar-width: none; }
+    .timeline-strip::-webkit-scrollbar { display: none; }
+    .month-tab {
+      background: var(--white); border: 1.5px solid var(--moonlit-dark);
+      border-radius: 50px; padding: 0.4rem 1.1rem; white-space: nowrap;
+      font-family: 'Montserrat', sans-serif; font-size: 0.8rem; font-weight: 600;
+      color: var(--text-secondary); cursor: pointer; transition: all var(--transition);
+    }
+    .month-tab:hover, .month-tab.active { background: var(--mocha); border-color: var(--mocha); color: var(--white); }
+    /* Panel */
+    .side-panel { display: flex; flex-direction: column; gap: 1.5rem; }
+    .panel-card { background: var(--white); border-radius: var(--radius-md); border: 1.5px solid var(--moonlit-dark); padding: 1.25rem; }
+    .panel-title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.95rem; color: var(--text-primary); margin-bottom: 1rem; padding-bottom: 0.6rem; border-bottom: 1.5px solid var(--moonlit-dark); }
+    .coming-item { display: flex; gap: 0.75rem; padding: 0.6rem 0; border-bottom: 0.5px solid var(--moonlit); }
+    .coming-item:last-child { border-bottom: none; }
+    .coming-cover { width: 36px; height: 48px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+    .coming-info { flex: 1; min-width: 0; }
+    .coming-title { font-size: 0.83rem; font-weight: 600; color: var(--text-primary); }
+    .coming-date { font-size: 0.73rem; color: var(--mocha); font-weight: 600; }
+    @media (min-width: 768px) { .arrivals-grid { grid-template-columns: repeat(2, 1fr) !important; } }
+    @media (min-width: 1024px) {
+      .arrivals-layout { grid-template-columns: 1fr 280px; }
+      .arrivals-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <nav class="nav-container" aria-label="Main navigation">
+    <a href="index.html" class="nav-logo">Page<span>Turn</span></a>
+    <ul class="nav-links">
+      <li><a href="browse.html">Browse</a></li>
+      <li><a href="categories.html">Categories</a></li>
+      <li><a href="authors.html">Authors</a></li>
+      <li><a href="new-arrivals.html" class="active">New Arrivals</a></li>
+      <li><a href="#" class="nav-cta">Start Reading</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <nav class="mobile-menu" id="mobile-menu">
+    <a href="browse.html">Browse</a>
+    <a href="categories.html">Categories</a>
+    <a href="authors.html">Authors</a>
+    <a href="new-arrivals.html">New Arrivals</a>
+    <a href="#" class="nav-cta" style="text-align:center;padding:0.6rem;border-radius:6px;">Start Reading</a>
+  </nav>
+</header>
+
+<section class="page-hero" aria-labelledby="arrivals-heading">
+  <div class="page-hero-inner">
+    <h1 id="arrivals-heading"><em>New Arrivals</em> — May 2025</h1>
+    <p>Fresh titles added this week. Be among the first to read them.</p>
+  </div>
+</section>
+
+<div class="page-wrap">
+  <div class="arrivals-layout">
+    <main>
+      <!-- Month tabs -->
+      <div class="timeline-strip" role="tablist" aria-label="Filter by month">
+        <button class="month-tab active" onclick="setMonth('May 2025', this)">May 2025</button>
+        <button class="month-tab" onclick="setMonth('April 2025', this)">April 2025</button>
+        <button class="month-tab" onclick="setMonth('March 2025', this)">March 2025</button>
+        <button class="month-tab" onclick="setMonth('February 2025', this)">February 2025</button>
+        <button class="month-tab" onclick="setMonth('January 2025', this)">January 2025</button>
+      </div>
+      <!-- Genre filter -->
+      <div class="filter-bar">
+        <button class="pill active" onclick="setGenre('all', this)">All Genres</button>
+        <button class="pill" onclick="setGenre('Fiction', this)">Fiction</button>
+        <button class="pill" onclick="setGenre('Non-Fiction', this)">Non-Fiction</button>
+        <button class="pill" onclick="setGenre('Mystery', this)">Mystery</button>
+        <button class="pill" onclick="setGenre('Science Fiction', this)">Sci-Fi</button>
+      </div>
+      <div style="display:grid;gap:1.1rem;" class="arrivals-grid" id="arrivals-grid"></div>
+    </main>
+
+    <aside class="side-panel" aria-label="Coming soon and newsletter">
+      <div class="panel-card">
+        <h3 class="panel-title">📅 Coming Soon</h3>
+        <div class="coming-item"><div class="coming-cover" style="background:#EBF0FA;">🌠</div><div class="coming-info"><div class="coming-title">The Constellation Diaries</div><div class="coming-date">June 3, 2025</div></div></div>
+        <div class="coming-item"><div class="coming-cover" style="background:#EAF3DE;">🌺</div><div class="coming-info"><div class="coming-title">Petals in the Wind</div><div class="coming-date">June 10, 2025</div></div></div>
+        <div class="coming-item"><div class="coming-cover" style="background:#FEF3E2;">🔭</div><div class="coming-info"><div class="coming-title">The Observer Effect</div><div class="coming-date">June 17, 2025</div></div></div>
+        <div class="coming-item"><div class="coming-cover" style="background:#F5F0E8;">🏰</div><div class="coming-info"><div class="coming-title">The Last Kingdom's Edge</div><div class="coming-date">June 24, 2025</div></div></div>
+      </div>
+      <div class="panel-card" style="background:var(--mocha);border-color:var(--mocha-dark);">
+        <h3 style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.95rem;color:var(--white);margin-bottom:0.5rem;">🔔 New Arrival Alerts</h3>
+        <p style="font-size:0.82rem;color:rgba(255,255,255,0.8);margin-bottom:1rem;">Get notified the moment a new book drops in your favourite genre.</p>
+        <input type="email" id="alert-email" placeholder="your@email.com" style="width:100%;border:none;border-radius:6px;padding:0.65rem 0.9rem;font-family:'Open Sans',sans-serif;font-size:0.85rem;color:var(--text-primary);background:var(--white);outline:none;margin-bottom:0.6rem;" />
+        <button onclick="subscribeAlerts()" style="width:100%;background:var(--ethereal-dark);color:var(--white);border:none;border-radius:6px;padding:0.7rem;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.85rem;cursor:pointer;">Enable Alerts</button>
+        <p id="alert-msg" style="font-size:0.8rem;color:var(--ethereal);margin-top:0.5rem;display:none;text-align:center;">✓ You're all set!</p>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand"><div class="footer-logo">Page<span>Turn</span></div><p>A warm, curated digital library for curious minds.</p></div>
+    <div class="footer-col"><h4>Explore</h4><ul><li><a href="new-arrivals.html">New Arrivals</a></li><li><a href="browse.html">Bestsellers</a></li><li><a href="browse.html">Free Books</a></li></ul></div>
+    <div class="footer-col"><h4>Company</h4><ul><li><a href="authors.html">Authors</a></li><li><a href="#">Blog</a></li><li><a href="#">About</a></li></ul></div>
+    <div class="footer-col"><h4>Support</h4><ul><li><a href="#">Help Center</a></li><li><a href="#">Privacy</a></li><li><a href="#">Contact</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">© 2025 PageTurn Digital Library. Crafted with care.</div>
+</footer>
+
+<script>
+const newBooks = [
+  { title:"Daughter of the Monsoon", author:"Sana Mirza", genre:"Fiction", cover:"🌧️", bg:"#EBF0FA", desc:"A sweeping family saga spanning three generations of women navigating love, loss, and identity across two continents.", date:"May 22, 2025", badge:"Free", badgeCls:"badge-free" },
+  { title:"The Amber Road", author:"Elena Vasquez", genre:"Historical", cover:"🏕️", bg:"#FEF3E2", desc:"A merchant's daughter traverses the ancient silk routes, uncovering political intrigue that could reshape an empire.", date:"May 19, 2025", badge:"New", badgeCls:"badge-new" },
+  { title:"Signal & Noise", author:"Sara Chen", genre:"Science Fiction", cover:"📡", bg:"#EDF5FB", desc:"Two AI researchers race against time to decode a signal from the edge of the solar system — and each other.", date:"May 15, 2025", badge:"Premium", badgeCls:"badge-premium" },
+  { title:"The Beekeeper's Letters", author:"Layla Hossain", genre:"Fiction", cover:"🐝", bg:"#EAF3DE", desc:"Letters discovered in an old apiary reveal a secret love affair that rewrites a small town's history forever.", date:"May 12, 2025", badge:"Free", badgeCls:"badge-free" },
+  { title:"The Glass Detective", author:"James O'Brien", genre:"Mystery", cover:"🔎", bg:"#F0EBFB", desc:"London, 1923. A blind detective uses sound and scent to solve a murder no one else believes happened.", date:"May 8, 2025", badge:"New", badgeCls:"badge-new" },
+  { title:"Unfolding Silence", author:"Priya Mehta", genre:"Non-Fiction", cover:"🌿", bg:"#EAF3DE", desc:"A meditation on grief, healing, and the quiet power of putting difficult feelings into words.", date:"May 5, 2025", badge:"Free", badgeCls:"badge-free" },
+];
+
+const wishlistState = {};
+let currentMonth = "May 2025";
+let currentGenre = "all";
+
+function setMonth(m, el) {
+  currentMonth = m;
+  document.querySelectorAll(".timeline-strip .month-tab").forEach(t => t.classList.remove("active"));
+  el.classList.add("active");
+  renderArrivals();
+}
+function setGenre(g, el) {
+  currentGenre = g;
+  document.querySelectorAll(".filter-bar .pill").forEach(p => p.classList.remove("active"));
+  el.classList.add("active");
+  renderArrivals();
+}
+function toggleWishlist(title) {
+  wishlistState[title] = !wishlistState[title];
+  renderArrivals();
+}
+function renderArrivals() {
+  let data = currentGenre === "all" ? newBooks : newBooks.filter(b => b.genre === currentGenre);
+  if (currentMonth !== "May 2025") {
+    document.getElementById("arrivals-grid").innerHTML = `<p style="color:var(--text-muted);font-size:0.9rem;padding:1.5rem 0;grid-column:1/-1;">No books listed for ${currentMonth} yet. Check back soon!</p>`;
+    return;
+  }
+  document.getElementById("arrivals-grid").innerHTML = data.map(b => `
+    <article class="new-book-card" tabindex="0" aria-label="${b.title}">
+      <div class="new-book-banner" style="background:${b.bg};">
+        ${b.cover}
+        <span class="new-label">NEW</span>
+        <span class="date-label">${b.date}</span>
+      </div>
+      <div class="new-book-body">
+        <div class="new-book-genre">${b.genre}</div>
+        <div class="new-book-title">${b.title}</div>
+        <div class="new-book-author">by ${b.author}</div>
+        <div class="new-book-desc">${b.desc}</div>
+        <div class="new-book-footer">
+          <button class="read-btn">Read Now</button>
+          <button class="wishlist-btn ${wishlistState[b.title]?'saved':''}" onclick="event.stopPropagation(); toggleWishlist('${b.title}')">
+            ${wishlistState[b.title]?'♥ Saved':'♡ Save'}
+          </button>
+          <span class="book-badge ${b.badgeCls}">${b.badge}</span>
+        </div>
+      </div>
+    </article>`).join("");
+}
+
+function subscribeAlerts() {
+  const e = document.getElementById("alert-email").value.trim();
+  if (!e || !e.includes("@")) { document.getElementById("alert-email").style.outline = "2px solid #D85A30"; return; }
+  document.getElementById("alert-email").style.outline = "";
+  document.getElementById("alert-email").value = "";
+  const m = document.getElementById("alert-msg");
+  m.style.display = "block";
+  setTimeout(() => m.style.display = "none", 3500);
+}
+
+document.getElementById("hamburger").addEventListener("click", () => {
+  document.getElementById("mobile-menu").classList.toggle("open");
+});
+renderArrivals();
+</script>
+</body>
+</html>

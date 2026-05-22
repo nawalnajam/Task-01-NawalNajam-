@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PageTurn — Authors</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .authors-grid { display: grid; grid-template-columns: 1fr; gap: 1.25rem; }
+    .author-card {
+      background: var(--white); border-radius: var(--radius-lg);
+      border: 1.5px solid var(--moonlit-dark); padding: 1.25rem;
+      display: flex; gap: 1rem; align-items: flex-start;
+      cursor: pointer; transition: transform var(--transition), box-shadow var(--transition);
+    }
+    .author-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(165,149,111,0.18); }
+    .author-avatar {
+      width: 60px; height: 60px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Montserrat', sans-serif; font-weight: 700;
+      font-size: 1.3rem; color: var(--white);
+    }
+    .author-info { flex: 1; min-width: 0; }
+    .author-name {
+      font-family: 'Montserrat', sans-serif; font-weight: 700;
+      font-size: 1rem; color: var(--text-primary); margin-bottom: 0.15rem;
+    }
+    .author-origin { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+    .author-bio { font-size: 0.83rem; color: var(--text-secondary); line-height: 1.55; margin-bottom: 0.75rem; }
+    .author-meta { display: flex; gap: 1.2rem; flex-wrap: wrap; }
+    .author-stat { font-size: 0.75rem; color: var(--text-muted); }
+    .author-stat strong { color: var(--mocha-dark); font-weight: 700; }
+    .author-genre-tag {
+      background: var(--ethereal); color: var(--mocha-dark);
+      font-size: 0.68rem; font-weight: 700; padding: 0.2rem 0.6rem;
+      border-radius: 50px; letter-spacing: 0.05em;
+    }
+    .follow-btn {
+      margin-top: 0.85rem; background: var(--mocha); color: var(--white);
+      border: none; border-radius: var(--radius-sm);
+      padding: 0.4rem 1rem; font-family: 'Montserrat', sans-serif;
+      font-weight: 700; font-size: 0.78rem; cursor: pointer;
+      transition: background var(--transition);
+    }
+    .follow-btn:hover { background: var(--mocha-dark); }
+    .follow-btn.following { background: var(--moonlit-dark); color: var(--text-secondary); }
+    .spotlight {
+      background: linear-gradient(135deg, var(--mocha-dark), var(--mocha));
+      border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 2rem;
+      display: flex; gap: 1.25rem; align-items: center; flex-wrap: wrap;
+    }
+    .spotlight-avatar {
+      width: 80px; height: 80px; border-radius: 50%; flex-shrink: 0;
+      background: var(--ethereal); display: flex; align-items: center;
+      justify-content: center; font-size: 2rem; font-weight: 700; color: var(--mocha-dark);
+      font-family: 'Montserrat', sans-serif;
+    }
+    .spotlight-text h3 { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.75rem; color: var(--ethereal); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.3rem; }
+    .spotlight-text h2 { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 1.4rem; color: var(--white); margin-bottom: 0.4rem; }
+    .spotlight-text p { font-size: 0.85rem; color: rgba(255,255,255,0.8); max-width: 480px; }
+    .search-bar { display: flex; border: 1.5px solid var(--mocha-light); border-radius: var(--radius-sm); overflow: hidden; background: var(--moonlit); margin-bottom: 1.25rem; }
+    .search-bar input { flex: 1; border: none; background: transparent; padding: 0.65rem 1rem; font-family: 'Open Sans', sans-serif; font-size: 0.9rem; color: var(--text-primary); outline: none; }
+    .search-bar input::placeholder { color: var(--text-muted); }
+    .search-bar button { background: var(--mocha); border: none; color: var(--white); padding: 0 1.1rem; cursor: pointer; font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.85rem; transition: background var(--transition); }
+    .search-bar button:hover { background: var(--mocha-dark); }
+    @media (min-width: 768px) { .authors-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { .authors-grid { grid-template-columns: repeat(3, 1fr); } }
+  </style>
+</head>
+<body>
+
+<header>
+  <nav class="nav-container" aria-label="Main navigation">
+    <a href="index.html" class="nav-logo">Page<span>Turn</span></a>
+    <ul class="nav-links">
+      <li><a href="browse.html">Browse</a></li>
+      <li><a href="categories.html">Categories</a></li>
+      <li><a href="authors.html" class="active">Authors</a></li>
+      <li><a href="new-arrivals.html">New Arrivals</a></li>
+      <li><a href="#" class="nav-cta">Start Reading</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <nav class="mobile-menu" id="mobile-menu">
+    <a href="browse.html">Browse</a>
+    <a href="categories.html">Categories</a>
+    <a href="authors.html">Authors</a>
+    <a href="new-arrivals.html">New Arrivals</a>
+    <a href="#" class="nav-cta" style="text-align:center;padding:0.6rem;border-radius:6px;">Start Reading</a>
+  </nav>
+</header>
+
+<section class="page-hero" aria-labelledby="authors-heading">
+  <div class="page-hero-inner">
+    <h1 id="authors-heading">Meet Our <em>Authors</em></h1>
+    <p>4,800+ writers from around the world, sharing their stories on PageTurn.</p>
+  </div>
+</section>
+
+<div class="page-wrap">
+
+  <!-- Spotlight -->
+  <div class="spotlight" aria-label="Author of the month">
+    <div class="spotlight-avatar">NS</div>
+    <div class="spotlight-text">
+      <h3>Author of the Month</h3>
+      <h2>Nadia Siddiqui</h2>
+      <p>Pakistani-born novelist celebrated for her luminous portrayals of diaspora, identity, and belonging. Her debut <em>Letters from Lahore</em> has been read by over 400,000 readers worldwide.</p>
+    </div>
+  </div>
+
+  <!-- Search + Filter -->
+  <h2 class="section-title">Browse Authors</h2>
+  <p class="section-sub">Discover writers you'll love</p>
+  <div class="search-bar">
+    <input type="search" id="author-search" placeholder="Search by name or genre…" />
+    <button onclick="renderAuthors()">Search</button>
+  </div>
+  <div class="filter-bar">
+    <button class="pill active" onclick="setGenre('all', this)">All</button>
+    <button class="pill" onclick="setGenre('Fiction', this)">Fiction</button>
+    <button class="pill" onclick="setGenre('Science Fiction', this)">Sci-Fi</button>
+    <button class="pill" onclick="setGenre('Historical', this)">Historical</button>
+    <button class="pill" onclick="setGenre('Mystery', this)">Mystery</button>
+    <button class="pill" onclick="setGenre('Self-Help', this)">Self-Help</button>
+  </div>
+
+  <div class="authors-grid" id="authors-grid"></div>
+</div>
+
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand"><div class="footer-logo">Page<span>Turn</span></div><p>A warm, curated digital library for curious minds.</p></div>
+    <div class="footer-col"><h4>Explore</h4><ul><li><a href="new-arrivals.html">New Arrivals</a></li><li><a href="browse.html">Bestsellers</a></li><li><a href="browse.html">Free Books</a></li></ul></div>
+    <div class="footer-col"><h4>Company</h4><ul><li><a href="authors.html">Authors</a></li><li><a href="#">Blog</a></li><li><a href="#">About</a></li></ul></div>
+    <div class="footer-col"><h4>Support</h4><ul><li><a href="#">Help Center</a></li><li><a href="#">Privacy</a></li><li><a href="#">Contact</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">© 2025 PageTurn Digital Library. Crafted with care.</div>
+</footer>
+
+<script>
+const authors = [
+  { name:"Layla Hossain", initials:"LH", color:"#7A6B4E", origin:"🇧🇩 Dhaka, Bangladesh", genre:"Fiction", books:7, followers:42000, bio:"Booker-longlisted novelist known for her lyrical explorations of memory and migration. Her prose is described as 'hauntingly beautiful'.", rating:4.8 },
+  { name:"Omar Farooqi", initials:"OF", color:"#4A7A5E", origin:"🇵🇰 Lahore, Pakistan", genre:"Historical", books:5, followers:28000, bio:"Historian-turned-novelist who weaves meticulous research into gripping, emotionally resonant stories set across the subcontinent.", rating:4.6 },
+  { name:"Sara Chen", initials:"SC", color:"#4A5E7A", origin:"🇨🇳 Shanghai / London", genre:"Science Fiction", books:9, followers:87000, bio:"Award-winning sci-fi writer and AI researcher. Her techno-thrillers have topped bestseller lists in 12 countries.", rating:4.9 },
+  { name:"Nadia Siddiqui", initials:"NS", color:"#9B6B6B", origin:"🇵🇰 Karachi, Pakistan", genre:"Fiction", books:4, followers:61000, bio:"Diaspora lit darling whose intimate novels about identity and belonging have earned her a devoted global readership.", rating:4.7 },
+  { name:"Arjun Mehra", initials:"AM", color:"#6B4A6E", origin:"🇮🇳 Mumbai, India", genre:"Drama", books:6, followers:34000, bio:"Playwright and novelist exploring class, ambition, and the quiet devastations of everyday life in modern India.", rating:4.5 },
+  { name:"Elena Vasquez", initials:"EV", color:"#8B6E4A", origin:"🇪🇸 Seville, Spain", genre:"Mystery", books:11, followers:95000, bio:"Queen of the literary thriller. Her detective Catalina Cruz has become one of fiction's most beloved investigators.", rating:4.8 },
+  { name:"Dr. Kevin Park", initials:"KP", color:"#4A8B7A", origin:"🇰🇷 Seoul / New York", genre:"Self-Help", books:3, followers:120000, bio:"Stanford psychologist and bestselling author helping millions build better habits through science-backed frameworks.", rating:4.5 },
+  { name:"Amara Osei", initials:"AO", color:"#7A4A4A", origin:"🇬🇭 Accra, Ghana", genre:"Fiction", books:5, followers:49000, bio:"Afrofuturist storyteller weaving myth, spirituality, and contemporary politics into startling, visionary narratives.", rating:4.7 },
+  { name:"Thomas Hill", initials:"TH", color:"#5E7A4A", origin:"🏴󠁧󠁢󠁥󠁮󠁧󠁿 London, England", genre:"Historical", books:8, followers:38000, bio:"Former Cambridge historian now writing rich, meticulously researched novels set in Victorian and Edwardian England.", rating:4.6 },
+];
+
+let currentGenre = "all";
+const followState = {};
+
+function setGenre(g, el) {
+  currentGenre = g;
+  document.querySelectorAll(".filter-bar .pill").forEach(p => p.classList.remove("active"));
+  el.classList.add("active");
+  renderAuthors();
+}
+
+function toggleFollow(name) {
+  followState[name] = !followState[name];
+  renderAuthors();
+}
+
+function renderAuthors() {
+  const q = (document.getElementById("author-search").value || "").toLowerCase();
+  let data = authors.filter(a =>
+    (currentGenre === "all" || a.genre === currentGenre) &&
+    (!q || a.name.toLowerCase().includes(q) || a.genre.toLowerCase().includes(q))
+  );
+  document.getElementById("authors-grid").innerHTML = data.map(a => `
+    <article class="author-card" tabindex="0" aria-label="${a.name}">
+      <div class="author-avatar" style="background:${a.color};">${a.initials}</div>
+      <div class="author-info">
+        <div class="author-name">${a.name} <span class="author-genre-tag">${a.genre}</span></div>
+        <div class="author-origin">${a.origin}</div>
+        <div class="author-bio">${a.bio}</div>
+        <div class="author-meta">
+          <span class="author-stat"><strong>${a.books}</strong> books</span>
+          <span class="author-stat"><strong>${(a.followers/1000).toFixed(0)}K</strong> followers</span>
+          <span class="author-stat"><strong>${a.rating}★</strong> avg rating</span>
+        </div>
+        <button class="follow-btn ${followState[a.name] ? 'following' : ''}" onclick="event.stopPropagation(); toggleFollow('${a.name}')">
+          ${followState[a.name] ? '✓ Following' : '+ Follow'}
+        </button>
+      </div>
+    </article>`).join("");
+}
+
+document.getElementById("hamburger").addEventListener("click", () => {
+  document.getElementById("mobile-menu").classList.toggle("open");
+});
+renderAuthors();
+</script>
+</body>
+</html>

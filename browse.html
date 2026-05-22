@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PageTurn — Browse Books</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .browse-layout {
+      display: grid; grid-template-columns: 1fr; gap: 2rem;
+    }
+    .sidebar-filters {
+      background: var(--white); border-radius: var(--radius-md);
+      border: 1.5px solid var(--moonlit-dark); padding: 1.25rem;
+    }
+    .filter-group { margin-bottom: 1.4rem; }
+    .filter-group:last-child { margin-bottom: 0; }
+    .filter-label {
+      font-family: 'Montserrat', sans-serif; font-weight: 700;
+      font-size: 0.82rem; color: var(--text-primary);
+      text-transform: uppercase; letter-spacing: 0.07em;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--moonlit-dark);
+    }
+    .checkbox-item {
+      display: flex; align-items: center; gap: 0.6rem;
+      padding: 0.3rem 0; cursor: pointer;
+    }
+    .checkbox-item input[type="checkbox"] {
+      accent-color: var(--mocha); width: 15px; height: 15px; cursor: pointer;
+    }
+    .checkbox-item label { font-size: 0.85rem; color: var(--text-secondary); cursor: pointer; }
+    .range-input { width: 100%; accent-color: var(--mocha); }
+    .range-vals { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-muted); margin-top: 0.3rem; }
+    .results-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;
+    }
+    .results-count { font-size: 0.85rem; color: var(--text-muted); }
+    .sort-select {
+      border: 1.5px solid var(--moonlit-dark); border-radius: var(--radius-sm);
+      padding: 0.4rem 0.75rem; font-family: 'Open Sans', sans-serif;
+      font-size: 0.83rem; color: var(--text-secondary);
+      background: var(--white); cursor: pointer; outline: none;
+    }
+    /* Book card vertical for grid view */
+    .book-card-v {
+      background: var(--white); border-radius: var(--radius-md);
+      border: 1.5px solid var(--moonlit-dark); padding: 1rem;
+      cursor: pointer; transition: transform var(--transition), box-shadow var(--transition);
+      display: flex; flex-direction: column; gap: 0.5rem;
+    }
+    .book-card-v:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(165,149,111,0.18); }
+    .book-cover-v {
+      width: 100%; height: 130px; border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center; font-size: 2.8rem;
+    }
+    .apply-btn {
+      width: 100%; background: var(--mocha); color: var(--white);
+      border: none; border-radius: var(--radius-sm); padding: 0.7rem;
+      font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.85rem;
+      cursor: pointer; transition: background var(--transition); margin-top: 0.5rem;
+    }
+    .apply-btn:hover { background: var(--mocha-dark); }
+    .search-bar {
+      display: flex; border: 1.5px solid var(--mocha-light);
+      border-radius: var(--radius-sm); overflow: hidden; background: var(--moonlit);
+      margin-bottom: 1.25rem;
+    }
+    .search-bar input {
+      flex: 1; border: none; background: transparent;
+      padding: 0.65rem 1rem; font-family: 'Open Sans', sans-serif;
+      font-size: 0.9rem; color: var(--text-primary); outline: none;
+    }
+    .search-bar input::placeholder { color: var(--text-muted); }
+    .search-bar button {
+      background: var(--mocha); border: none; color: var(--white);
+      padding: 0 1.1rem; cursor: pointer;
+      font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.85rem;
+      transition: background var(--transition);
+    }
+    .search-bar button:hover { background: var(--mocha-dark); }
+    @media (min-width: 768px) {
+      .browse-layout { grid-template-columns: 240px 1fr; }
+      .books-grid-v { grid-template-columns: repeat(2, 1fr) !important; }
+    }
+    @media (min-width: 1024px) {
+      .books-grid-v { grid-template-columns: repeat(3, 1fr) !important; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <nav class="nav-container" aria-label="Main navigation">
+    <a href="index.html" class="nav-logo">Page<span>Turn</span></a>
+    <ul class="nav-links">
+      <li><a href="browse.html" class="active">Browse</a></li>
+      <li><a href="categories.html">Categories</a></li>
+      <li><a href="authors.html">Authors</a></li>
+      <li><a href="new-arrivals.html">New Arrivals</a></li>
+      <li><a href="#" class="nav-cta">Start Reading</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <nav class="mobile-menu" id="mobile-menu">
+    <a href="browse.html">Browse</a>
+    <a href="categories.html">Categories</a>
+    <a href="authors.html">Authors</a>
+    <a href="new-arrivals.html">New Arrivals</a>
+    <a href="#" class="nav-cta" style="text-align:center;padding:0.6rem;border-radius:6px;">Start Reading</a>
+  </nav>
+</header>
+
+<section class="page-hero" aria-labelledby="browse-heading">
+  <div class="page-hero-inner">
+    <h1 id="browse-heading">Browse <em>All Books</em></h1>
+    <p>50,000+ titles across every genre — filter, sort, and find your next read.</p>
+  </div>
+</section>
+
+<div class="page-wrap">
+  <div class="browse-layout">
+
+    <!-- Sidebar Filters -->
+    <aside aria-label="Filters">
+      <div class="sidebar-filters">
+        <div class="filter-group">
+          <div class="filter-label">Search</div>
+          <div class="search-bar">
+            <input type="search" id="search-input" placeholder="Title, author…" aria-label="Search books" />
+            <button onclick="filterBooks()">Go</button>
+          </div>
+        </div>
+        <div class="filter-group">
+          <div class="filter-label">Genre</div>
+          <div id="genre-filters">
+            <div class="checkbox-item"><input type="checkbox" id="g1" value="Fiction" checked /><label for="g1">Fiction</label></div>
+            <div class="checkbox-item"><input type="checkbox" id="g2" value="Historical" checked /><label for="g2">Historical</label></div>
+            <div class="checkbox-item"><input type="checkbox" id="g3" value="Science Fiction" checked /><label for="g3">Science Fiction</label></div>
+            <div class="checkbox-item"><input type="checkbox" id="g4" value="Contemporary" checked /><label for="g4">Contemporary</label></div>
+            <div class="checkbox-item"><input type="checkbox" id="g5" value="Mystery" checked /><label for="g5">Mystery</label></div>
+            <div class="checkbox-item"><input type="checkbox" id="g6" value="Drama" checked /><label for="g6">Drama</label></div>
+            <div class="checkbox-item"><input type="checkbox" id="g7" value="Self-Help" checked /><label for="g7">Self-Help</label></div>
+            <div class="checkbox-item"><input type="checkbox" id="g8" value="Biography" checked /><label for="g8">Biography</label></div>
+          </div>
+        </div>
+        <div class="filter-group">
+          <div class="filter-label">Availability</div>
+          <div class="checkbox-item"><input type="checkbox" id="a1" value="free" checked /><label for="a1">Free</label></div>
+          <div class="checkbox-item"><input type="checkbox" id="a2" value="premium" checked /><label for="a2">Premium</label></div>
+          <div class="checkbox-item"><input type="checkbox" id="a3" value="new" checked /><label for="a3">New Arrivals</label></div>
+        </div>
+        <div class="filter-group">
+          <div class="filter-label">Min Rating</div>
+          <input type="range" class="range-input" id="rating-filter" min="1" max="5" step="0.5" value="1" oninput="document.getElementById('rating-val').textContent=this.value+'★'" />
+          <div class="range-vals"><span>1★</span><span id="rating-val">1★</span><span>5★</span></div>
+        </div>
+        <button class="apply-btn" onclick="filterBooks()">Apply Filters</button>
+      </div>
+    </aside>
+
+    <!-- Results -->
+    <main>
+      <div class="results-header">
+        <span class="results-count" id="results-count">Showing 18 books</span>
+        <select class="sort-select" id="sort-select" onchange="filterBooks()">
+          <option value="default">Sort: Featured</option>
+          <option value="rating">Highest Rated</option>
+          <option value="title">A–Z Title</option>
+          <option value="newest">Newest First</option>
+        </select>
+      </div>
+      <div class="books-grid-v" style="display:grid;gap:1.1rem;" id="books-grid"></div>
+    </main>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand"><div class="footer-logo">Page<span>Turn</span></div><p>A warm, curated digital library for curious minds.</p></div>
+    <div class="footer-col"><h4>Explore</h4><ul><li><a href="new-arrivals.html">New Arrivals</a></li><li><a href="browse.html">Bestsellers</a></li><li><a href="browse.html">Free Books</a></li></ul></div>
+    <div class="footer-col"><h4>Company</h4><ul><li><a href="authors.html">Authors</a></li><li><a href="#">Blog</a></li><li><a href="#">About</a></li></ul></div>
+    <div class="footer-col"><h4>Support</h4><ul><li><a href="#">Help Center</a></li><li><a href="#">Privacy</a></li><li><a href="#">Contact</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">© 2025 PageTurn Digital Library. Crafted with care.</div>
+</footer>
+
+<script>
+const allBooks = [
+  { title: "The Atlas of Forgotten Skies", author: "Layla Hossain", genre: "Fiction", cover: "🌌", bg: "#EBF0FA", rating: 4.8, reviews: 2340, badge: "new", year: 2025 },
+  { title: "Roots of the Silent Valley", author: "Omar Farooqi", genre: "Historical", cover: "🌿", bg: "#EAF3DE", rating: 4.6, reviews: 1820, badge: "free", year: 2024 },
+  { title: "The Midnight Algorithm", author: "Sara Chen", genre: "Science Fiction", cover: "🤖", bg: "#EDF5FB", rating: 4.9, reviews: 3100, badge: "premium", year: 2025 },
+  { title: "Letters from Lahore", author: "Nadia Siddiqui", genre: "Contemporary", cover: "✉️", bg: "#FEF3E2", rating: 4.7, reviews: 1560, badge: "new", year: 2025 },
+  { title: "When Rivers Remember", author: "Arjun Mehra", genre: "Drama", cover: "🌊", bg: "#F0EBFB", rating: 4.5, reviews: 980, badge: "free", year: 2024 },
+  { title: "The Cartographer's Secret", author: "Elena Vasquez", genre: "Mystery", cover: "🗺️", bg: "#FBF0F0", rating: 4.8, reviews: 2750, badge: "premium", year: 2024 },
+  { title: "Echoes of the Indus", author: "Farhan Khan", genre: "Historical", cover: "🏺", bg: "#F5F0E8", rating: 4.4, reviews: 1200, badge: "free", year: 2023 },
+  { title: "Gravity of Small Things", author: "Priya Mehta", genre: "Contemporary", cover: "🍃", bg: "#EAF3DE", rating: 4.6, reviews: 870, badge: "new", year: 2025 },
+  { title: "The Neon Silence", author: "James O'Brien", genre: "Mystery", cover: "🔦", bg: "#EDF5FB", rating: 4.3, reviews: 640, badge: "free", year: 2024 },
+  { title: "Seven Doors to Nowhere", author: "Amara Osei", genre: "Fiction", cover: "🚪", bg: "#FBF0F0", rating: 4.7, reviews: 1890, badge: "premium", year: 2025 },
+  { title: "Habits of the Wise", author: "Dr. Kevin Park", genre: "Self-Help", cover: "🧠", bg: "#FEF3E2", rating: 4.5, reviews: 3400, badge: "free", year: 2024 },
+  { title: "Daughter of the Monsoon", author: "Sana Mirza", genre: "Fiction", cover: "🌧️", bg: "#EBF0FA", rating: 4.8, reviews: 2200, badge: "new", year: 2025 },
+  { title: "The Last Bookshop", author: "Thomas Hill", genre: "Contemporary", cover: "📚", bg: "#F5F0E8", rating: 4.6, reviews: 990, badge: "free", year: 2023 },
+  { title: "Quantum Hearts", author: "Sara Chen", genre: "Science Fiction", cover: "💫", bg: "#EDF5FB", rating: 4.4, reviews: 780, badge: "premium", year: 2024 },
+  { title: "The Amber Road", author: "Elena Vasquez", genre: "Historical", cover: "🏕️", bg: "#FEF3E2", rating: 4.7, reviews: 1430, badge: "new", year: 2025 },
+  { title: "Finding Noor", author: "Nadia Siddiqui", genre: "Biography", cover: "🌟", bg: "#FBF0F0", rating: 4.9, reviews: 4100, badge: "free", year: 2024 },
+  { title: "Clockwork Dreams", author: "Arjun Mehra", genre: "Science Fiction", cover: "⚙️", bg: "#EBF0FA", rating: 4.3, reviews: 520, badge: "premium", year: 2023 },
+  { title: "The Beekeeper's Letters", author: "Layla Hossain", genre: "Drama", cover: "🐝", bg: "#EAF3DE", rating: 4.6, reviews: 1100, badge: "free", year: 2025 },
+];
+
+const badgeMap = { new: { cls: "badge-new", label: "New" }, free: { cls: "badge-free", label: "Free" }, premium: { cls: "badge-premium", label: "Premium" } };
+function stars(r) { return "★".repeat(Math.floor(r)) + (r%1>=0.5?"½":"") + "☆".repeat(5-Math.floor(r)-(r%1>=0.5?1:0)); }
+
+function filterBooks() {
+  const q = (document.getElementById("search-input").value || "").toLowerCase();
+  const minRating = parseFloat(document.getElementById("rating-filter").value);
+  const checkedGenres = [...document.querySelectorAll("#genre-filters input:checked")].map(c => c.value);
+  const checkedBadges = [...document.querySelectorAll("input[id^='a']:checked")].map(c => c.value);
+  const sort = document.getElementById("sort-select").value;
+
+  let filtered = allBooks.filter(b =>
+    (!q || b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q)) &&
+    b.rating >= minRating &&
+    checkedGenres.includes(b.genre) &&
+    checkedBadges.includes(b.badge)
+  );
+
+  if (sort === "rating") filtered.sort((a,b) => b.rating - a.rating);
+  else if (sort === "title") filtered.sort((a,b) => a.title.localeCompare(b.title));
+  else if (sort === "newest") filtered.sort((a,b) => b.year - a.year);
+
+  document.getElementById("results-count").textContent = `Showing ${filtered.length} book${filtered.length!==1?"s":""}`;
+  const grid = document.getElementById("books-grid");
+  grid.innerHTML = filtered.length ? filtered.map(b => {
+    const bd = badgeMap[b.badge];
+    return `<article class="book-card-v" tabindex="0">
+      <div class="book-cover-v" style="background:${b.bg};">${b.cover}</div>
+      <div class="book-genre">${b.genre}</div>
+      <div class="book-title">${b.title}</div>
+      <div class="book-author">by ${b.author}</div>
+      <div class="book-meta">
+        <span class="stars">${stars(b.rating)}</span>
+        <span class="rating-count">${b.rating} (${b.reviews.toLocaleString()})</span>
+        <span class="book-badge ${bd.cls}">${bd.label}</span>
+      </div>
+    </article>`;
+  }).join("") : `<p style="color:var(--text-muted);padding:1.5rem 0;">No books match your filters.</p>`;
+}
+
+document.getElementById("hamburger").addEventListener("click", () => {
+  const m = document.getElementById("mobile-menu");
+  m.classList.toggle("open");
+});
+
+filterBooks();
+</script>
+</body>
+</html>

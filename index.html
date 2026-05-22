@@ -1,149 +1,770 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DecodeLabs – Home | Industrial Training Kit</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>PageTurn — Digital Library</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ── CSS Custom Properties ── */
+    :root {
+      --mocha: #A5956F;
+      --mocha-light: #C4B48E;
+      --mocha-dark: #7A6B4E;
+      --ethereal: #A0D4E0;
+      --ethereal-dark: #6EB8CC;
+      --moonlit: #F2F0EA;
+      --moonlit-dark: #E0DACE;
+      --text-primary: #2C2416;
+      --text-secondary: #5C5040;
+      --text-muted: #8C7B65;
+      --white: #FFFFFF;
+      --nav-h: 56px;
+      --hero-h: 360px;
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+      --transition: 0.25s ease;
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Open Sans', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      color: var(--text-primary);
+      background: var(--moonlit);
+    }
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+
+    /* ── NAVIGATION (with integrated search, links pushed to right) ── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--white);
+      border-bottom: 1.5px solid var(--mocha-light);
+      min-height: var(--nav-h);
+    }
+    .nav-container {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0.5rem 1.25rem;
+      gap: 0.75rem;
+    }
+    .nav-logo {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: var(--mocha-dark);
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+    .nav-logo span { color: var(--ethereal-dark); }
+
+    /* Navbar Search (inline, with precise 1cm gaps) */
+    .nav-search {
+      flex: 0 1 auto;
+      min-width: 200px;
+      max-width: 300px;
+      margin-left: 1cm;
+      margin-right: 1cm;
+    }
+    .navbar-search-bar {
+      display: flex;
+      gap: 0;
+      border: 1.5px solid var(--mocha-light);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      background: var(--moonlit);
+      transition: all var(--transition);
+    }
+    .navbar-search-bar input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      padding: 0.45rem 0.75rem;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 0.85rem;
+      color: var(--text-primary);
+      outline: none;
+    }
+    .navbar-search-bar input::placeholder { color: var(--text-muted); font-size: 0.8rem; }
+    .navbar-search-bar button {
+      background: var(--mocha);
+      border: none;
+      color: var(--white);
+      padding: 0 0.9rem;
+      cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      font-size: 0.75rem;
+      letter-spacing: 0.3px;
+      transition: background var(--transition);
+      white-space: nowrap;
+    }
+    .navbar-search-bar button:hover { background: var(--mocha-dark); }
+
+    /* Desktop nav links - pushed to the right using margin-left: auto */
+    .nav-links {
+      display: none;
+      gap: 1.8rem;
+      align-items: center;
+      margin-left: auto;  /* This pushes the links to the right side */
+    }
+    .nav-links a {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      transition: color var(--transition);
+      white-space: nowrap;
+    }
+    .nav-links a:hover { color: var(--mocha-dark); }
+    .nav-cta {
+      background: var(--mocha);
+      color: var(--white) !important;
+      padding: 0.45rem 1.1rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600 !important;
+      font-size: 0.85rem !important;
+      transition: background var(--transition);
+    }
+    .nav-cta:hover { background: var(--mocha-dark) !important; }
+
+    /* Hamburger (mobile) */
+    .hamburger {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+      margin-left: auto;
+    }
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--mocha-dark);
+      border-radius: 2px;
+      transition: all var(--transition);
+    }
+
+    /* Mobile menu */
+    .mobile-menu {
+      display: none;
+      flex-direction: column;
+      background: var(--white);
+      border-bottom: 1.5px solid var(--mocha-light);
+      padding: 1rem 1.25rem;
+      gap: 0.85rem;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      padding: 0.35rem 0;
+      border-bottom: 0.5px solid var(--moonlit-dark);
+    }
+    .mobile-menu a:last-child { border-bottom: none; }
+
+    /* ── HERO SECTION ── */
+    .hero {
+      min-height: var(--hero-h);
+      background: linear-gradient(135deg, var(--mocha-dark) 0%, var(--mocha) 55%, var(--mocha-light) 100%);
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 280px;
+      height: 280px;
+      background: var(--ethereal);
+      opacity: 0.18;
+      border-radius: 50%;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -80px;
+      left: -40px;
+      width: 200px;
+      height: 200px;
+      background: var(--ethereal);
+      opacity: 0.12;
+      border-radius: 50%;
+    }
+    .hero-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: var(--ethereal);
+      color: var(--mocha-dark);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.9rem;
+      border-radius: 50px;
+      margin-bottom: 1.1rem;
+    }
+    .hero h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.25;
+      margin-bottom: 1rem;
+      max-width: 560px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--ethereal);
+    }
+    .hero p {
+      color: rgba(255,255,255,0.82);
+      font-size: clamp(0.9rem, 2.2vw, 1.05rem);
+      max-width: 480px;
+      margin-bottom: 1.8rem;
+    }
+    .hero-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+    }
+    .btn-primary {
+      background: var(--white);
+      color: var(--mocha-dark);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 0.88rem;
+      padding: 0.75rem 1.6rem;
+      border-radius: var(--radius-sm);
+      border: none;
+      cursor: pointer;
+      transition: background var(--transition), transform var(--transition);
+    }
+    .btn-primary:hover { background: var(--moonlit); transform: translateY(-2px); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--white);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      font-size: 0.88rem;
+      padding: 0.72rem 1.6rem;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid rgba(255,255,255,0.55);
+      cursor: pointer;
+      transition: border-color var(--transition), background var(--transition);
+    }
+    .btn-ghost:hover { border-color: var(--white); background: rgba(255,255,255,0.08); }
+
+    /* ── MAIN LAYOUT ── */
+    .main-layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    /* ── SECTION TITLE ── */
+    .section-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(1.15rem, 3vw, 1.45rem);
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+    .section-sub {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+    }
+
+    /* ── FEATURED BOOKS GRID ── */
+    .books-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.1rem;
+    }
+    .book-card {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--moonlit-dark);
+      display: flex;
+      gap: 1rem;
+      padding: 1rem;
+      transition: transform var(--transition), box-shadow var(--transition);
+      cursor: pointer;
+    }
+    .book-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(165,149,111,0.18);
+    }
+    .book-cover {
+      width: 68px;
+      height: 92px;
+      border-radius: var(--radius-sm);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+    }
+    .book-info { flex: 1; min-width: 0; }
+    .book-genre {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--mocha);
+      margin-bottom: 0.3rem;
+    }
+    .book-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      margin-bottom: 0.2rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .book-author {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+    .book-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+    .stars { color: var(--mocha); font-size: 0.78rem; }
+    .rating-count { font-size: 0.75rem; color: var(--text-muted); }
+    .book-badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 50px;
+      letter-spacing: 0.06em;
+    }
+    .badge-free { background: #E6F5EE; color: #0D6E3F; }
+    .badge-new { background: var(--ethereal); color: var(--mocha-dark); }
+    .badge-premium { background: #FEF3E2; color: #8B5E00; }
+
+    /* ── CATEGORIES ── */
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.85rem;
+    }
+    .cat-card {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--moonlit-dark);
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      transition: border-color var(--transition), transform var(--transition);
+    }
+    .cat-card:hover {
+      border-color: var(--mocha-light);
+      transform: translateY(-2px);
+    }
+    .cat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .cat-name {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: var(--text-primary);
+    }
+    .cat-count { font-size: 0.75rem; color: var(--text-muted); }
+
+    /* ── SIDE PANEL ── */
+    .side-panel { display: flex; flex-direction: column; gap: 1.5rem; }
+    .panel-card {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--moonlit-dark);
+      padding: 1.25rem;
+    }
+    .panel-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1.5px solid var(--moonlit-dark);
+    }
+    .trending-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.6rem 0;
+      border-bottom: 0.5px solid var(--moonlit);
+      cursor: pointer;
+    }
+    .trending-item:last-child { border-bottom: none; }
+    .trend-rank {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--mocha-light);
+      width: 24px;
+      flex-shrink: 0;
+    }
+    .trend-info { flex: 1; min-width: 0; }
+    .trend-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .trend-author { font-size: 0.75rem; color: var(--text-muted); }
+    .trend-cover {
+      width: 36px;
+      height: 48px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+    .newsletter-form { display: flex; flex-direction: column; gap: 0.75rem; }
+    .newsletter-form input {
+      border: 1.5px solid var(--moonlit-dark);
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 0.9rem;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 0.88rem;
+      color: var(--text-primary);
+      background: var(--moonlit);
+      outline: none;
+      transition: border-color var(--transition);
+    }
+    .newsletter-form input:focus { border-color: var(--mocha); }
+    .newsletter-form button {
+      background: var(--ethereal-dark);
+      color: var(--white);
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 0.7rem;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background var(--transition);
+    }
+    .newsletter-form button:hover { background: var(--mocha); }
+    #nl-msg {
+      font-size: 0.82rem;
+      color: #0D6E3F;
+      display: none;
+      text-align: center;
+    }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      background: var(--mocha);
+      padding: 1.2rem 1.25rem;
+    }
+    .stats-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    .stat-item { text-align: center; }
+    .stat-num {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--white);
+    }
+    .stat-label { font-size: 0.78rem; color: rgba(255,255,255,0.75); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--text-primary);
+      color: rgba(255,255,255,0.75);
+    }
+    .footer-top {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    .footer-brand p {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.6);
+      margin-top: 0.5rem;
+      max-width: 260px;
+    }
+    .footer-logo {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--white);
+    }
+    .footer-logo span { color: var(--ethereal); }
+    .footer-col h4 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--white);
+      margin-bottom: 0.85rem;
+      letter-spacing: 0.04em;
+    }
+    .footer-col ul { display: flex; flex-direction: column; gap: 0.5rem; }
+    .footer-col ul li a {
+      font-size: 0.83rem;
+      color: rgba(255,255,255,0.6);
+      transition: color var(--transition);
+    }
+    .footer-col ul li a:hover { color: var(--ethereal); }
+    .footer-bottom {
+      border-top: 0.5px solid rgba(255,255,255,0.12);
+      padding: 1rem 1.25rem;
+      text-align: center;
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.45);
+    }
+
+    /* ── RESPONSIVE: tablet & desktop ── */
+    @media (min-width: 768px) {
+      .hamburger { display: none; }
+      .nav-links { display: flex; }
+      .books-grid { grid-template-columns: repeat(2, 1fr); }
+      .cat-grid { grid-template-columns: repeat(3, 1fr); }
+      .stats-inner { grid-template-columns: repeat(4, 1fr); }
+      .footer-top { grid-template-columns: 2fr 1fr 1fr; }
+    }
+
+    @media (min-width: 1024px) {
+      .main-layout { grid-template-columns: 1fr 300px; }
+      .books-grid { grid-template-columns: 1fr; }
+      .cat-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-top { grid-template-columns: 2fr 1fr 1fr 1fr; }
+    }
+
+    /* small screens: adjust 1cm margins to avoid overflow */
+    @media (max-width: 680px) {
+      .nav-search {
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
+        min-width: 160px;
+      }
+      .navbar-search-bar input { font-size: 0.75rem; padding: 0.4rem 0.5rem; }
+      .navbar-search-bar button { padding: 0 0.6rem; font-size: 0.7rem; }
+      .nav-logo { font-size: 1.1rem; }
+    }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .hero-inner > * {
+      animation: fadeUp 0.6s ease forwards;
+      opacity: 0;
+    }
+    .hero-badge { animation-delay: 0.1s; }
+    .hero h1 { animation-delay: 0.22s; }
+    .hero p { animation-delay: 0.34s; }
+    .hero-btns { animation-delay: 0.46s; }
+  </style>
 </head>
 <body>
+
+  <!-- ══ HEADER / NAVBAR WITH SEARCH (links pushed to far right) ══ -->
   <header>
-    <div class="container">
-      <nav>
-        <div class="nav-brand">Decode<span>Labs</span></div>
-        <button class="menu-toggle" id="menuToggle">☰</button>
-        <div class="nav-links" id="navLinks">
-          <a href="index.html" class="active">Home</a>
-          <a href="projects.html">Projects</a>
-          <a href="training.html">Training</a>
-          <a href="contact.html">Contact</a>
+    <nav class="nav-container" aria-label="Main navigation">
+      <a href="#" class="nav-logo">Page<span>Turn</span></a>
+      
+      <!-- Search bar: exactly 1cm from logo and 1cm from links (using margins) -->
+      <div class="nav-search">
+        <div class="navbar-search-bar" role="search">
+          <input type="search" id="search-input" placeholder="Search books, authors..." aria-label="Search books" />
+          <button onclick="handleSearch()" aria-label="Search">Search</button>
         </div>
-      </nav>
-    </div>
+      </div>
+
+      <!-- Navigation links – automatically pushed to the right by margin-left: auto -->
+      <ul class="nav-links" role="list">
+        <li><a href="browse.html">Browse</a></li>
+        <li><a href="categories.html">Categories</a></li>
+        <li><a href="authors.html">Authors</a></li>
+        <li><a href="new-arrivals.html">New Arrivals</a></li>
+        <li><a href="#" class="nav-cta">Start Reading</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+    <nav class="mobile-menu" id="mobile-menu" aria-label="Mobile navigation">
+      <a href="browse.html">Browse Books</a>
+      <a href="categories.html">Categories</a>
+      <a href="authors.html">Authors</a>
+      <a href="new-arrivals.html">New Arrivals</a>
+      <a href="#" class="nav-cta" style="text-align:center; padding:0.6rem; border-radius:6px;">Start Reading</a>
+    </nav>
   </header>
 
-  <main>
-    <!-- Hero Section - Big & Attractive -->
-    <section class="hero">
-      <div class="container">
-        <h1>Master Full Stack Development<br>with <span class="highlight">Industrial Training Kit</span></h1>
-        <p>Your first internship project at DecodeLabs — build responsive, accessible, and future-ready web experiences. Mobile-first, semantic HTML5, modern CSS, and JavaScript.</p>
-        <div class="hero-buttons">
-          <a href="projects.html" class="btn btn-primary">Explore Projects →</a>
-          <a href="contact.html" class="btn btn-outline">Join Internship</a>
-        </div>
-        <div class="hero-stats">
-          <div class="stat">
-            <span class="stat-number">4+</span>
-            <span class="stat-label">Live Projects</span>
-          </div>
-          <div class="stat">
-            <span class="stat-number">100%</span>
-            <span class="stat-label">Hands-on</span>
-          </div>
-          <div class="stat">
-            <span class="stat-number">24/7</span>
-            <span class="stat-label">Support</span>
-          </div>
-        </div>
+  <!-- ══ HERO SECTION ══ -->
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="hero-inner">
+      <span class="hero-badge">✦ 50,000+ Books Available</span>
+      <h1 id="hero-heading">Your Next Favourite Story is <em>One Click Away</em></h1>
+      <p>Explore thousands of titles from world-class authors. Read free previews, build your reading list, and discover new worlds.</p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="document.getElementById('featured').scrollIntoView({behavior:'smooth'})">Explore Library</button>
+        <button class="btn-ghost">Free Sample Reads</button>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Features / Cards Section (extensive) -->
-    <section class="features">
-      <div class="container">
-        <div class="section-header">
-          <h2> What You'll Build</h2>
-          <p>Real industry-grade projects – no fluff, only skills.</p>
-        </div>
-        <div class="cards-grid">
-          <div class="card">
-            <div class="card-icon">📱</div>
-            <h3>Responsive Dashboard</h3>
-            <p>Learn Grid, Flexbox, and Container Queries. Build a fully responsive admin dashboard.</p>
-            <span class="badge">Week 1</span>
-          </div>
-          <div class="card">
-            <div class="card-icon">🛒</div>
-            <h3>E‑Commerce Frontend</h3>
-            <p>Product listing, cart state, local storage – pure JavaScript, no frameworks.</p>
-            <span class="badge">Week 2</span>
-          </div>
-          <div class="card">
-            <div class="card-icon">📊</div>
-            <h3>Analytics Module</h3>
-            <p>Fetch API + Chart.js – visualize training kit metrics in real time.</p>
-            <span class="badge">Week 3</span>
-          </div>
-          <div class="card">
-            <div class="card-icon">🔐</div>
-            <h3>Auth System</h3>
-            <p>Login/Signup with JWT, form validation, and protected routes.</p>
-            <span class="badge">Week 4</span>
-          </div>
-        </div>
-      </div>
-    </section>
+  <!-- ══ STATS BAR ══ -->
+  <section class="stats-bar" aria-label="Library statistics">
+    <div class="stats-inner">
+      <div class="stat-item"><div class="stat-num">50K+</div><div class="stat-label">Books Available</div></div>
+      <div class="stat-item"><div class="stat-num">1.2M</div><div class="stat-label">Active Readers</div></div>
+      <div class="stat-item"><div class="stat-num">4,800</div><div class="stat-label">Authors</div></div>
+      <div class="stat-item"><div class="stat-num">120+</div><div class="stat-label">Genres</div></div>
+    </div>
+  </section>
 
-    <!-- About DecodeLabs Section -->
-    <section class="about">
-      <div class="container">
-        <div class="about-grid">
-          <div class="about-text">
-            <h2>Why DecodeLabs?</h2>
-            <p>We don't just teach coding – we simulate real startup environments. Every project is a milestone, every line of code counts. Our training kit is designed by industry experts to bridge the gap between theory and production-ready development.</p>
-            <ul class="about-list">
-              <li>✅ Mobile-first mindset from day one</li>
-              <li>✅ Semantic HTML + WCAG accessibility</li>
-              <li>✅ 2025 UI/UX trends (Warm & Grounded)</li>
-              <li>✅ Portfolio-ready projects</li>
-            </ul>
-            <a href="training.html" class="btn btn-outline">View Full Curriculum →</a>
-          </div>
-          <div class="about-image">
-            <div class="image-placeholder">🎓</div>
-          </div>
-        </div>
-      </div>
-    </section>
+  <!-- ══ MAIN CONTENT + SIDEBAR ══ -->
+  <main class="main-layout" id="featured">
+    <div>
+      <!-- Featured Books -->
+      <section aria-labelledby="books-heading">
+        <h2 class="section-title" id="books-heading">Featured Books</h2>
+        <p class="section-sub">Handpicked titles loved by our community</p>
+        <div class="books-grid" id="books-grid"></div>
+      </section>
 
-    <!-- Call to Action Section -->
-    <section class="cta">
-      <div class="container">
-        <h2>Ready to start your journey?</h2>
-        <p>Join DecodeLabs internship program and build real-world projects that impress employers.</p>
-        <a href="contact.html" class="btn btn-primary">Enroll Now →</a>
-      </div>
-    </section>
+      <!-- Categories -->
+      <section aria-labelledby="cat-heading" id="categories" style="margin-top:2.5rem;">
+        <h2 class="section-title" id="cat-heading">Browse by Category</h2>
+        <p class="section-sub">Find your favourite genre</p>
+        <div class="cat-grid">
+          <article class="cat-card" tabindex="0" role="button" aria-label="Fiction"><div class="cat-icon" style="background:#FDF4ED;">📖</div><div><div class="cat-name">Fiction</div><div class="cat-count">12,340 books</div></div></article>
+          <article class="cat-card" tabindex="0" role="button" aria-label="Non-Fiction"><div class="cat-icon" style="background:#EBF7F5;">🔬</div><div><div class="cat-name">Non-Fiction</div><div class="cat-count">8,910 books</div></div></article>
+          <article class="cat-card" tabindex="0" role="button" aria-label="Mystery"><div class="cat-icon" style="background:#F5EDF5;">🔍</div><div><div class="cat-name">Mystery</div><div class="cat-count">5,200 books</div></div></article>
+          <article class="cat-card" tabindex="0" role="button" aria-label="Science & Tech"><div class="cat-icon" style="background:#EDF2FB;">💡</div><div><div class="cat-name">Science & Tech</div><div class="cat-count">4,680 books</div></div></article>
+          <article class="cat-card" tabindex="0" role="button" aria-label="Romance"><div class="cat-icon" style="background:#FBF0F0;">💛</div><div><div class="cat-name">Romance</div><div class="cat-count">6,750 books</div></div></article>
+          <article class="cat-card" tabindex="0" role="button" aria-label="History"><div class="cat-icon" style="background:#F5F0E8;">🏛️</div><div><div class="cat-name">History</div><div class="cat-count">3,120 books</div></div></article>
+        </div>
+      </section>
+    </div>
+
+    <!-- Side Panel -->
+    <aside class="side-panel">
+      <div class="panel-card"><h3 class="panel-title">📈 Trending This Week</h3><div id="trending-list"></div></div>
+      <div class="panel-card"><h3 class="panel-title">✉️ Reading Digest</h3><p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">Get weekly book recommendations straight to your inbox.</p><div class="newsletter-form"><input type="email" id="nl-email" placeholder="your@email.com" /><button onclick="subscribeNewsletter()">Subscribe — It's Free</button><p id="nl-msg">🎉 You're on the list! Check your inbox.</p></div></div>
+      <div class="panel-card" style="background:var(--mocha);border-color:var(--mocha-dark);"><h3 style="font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.95rem;color:var(--white);margin-bottom:0.6rem;">2025 Reading Challenge</h3><p style="font-size:0.82rem;color:rgba(255,255,255,0.8);margin-bottom:1rem;">Join 120,000 readers. Set your annual goal and track your progress.</p><div style="background:rgba(255,255,255,0.15);border-radius:6px;height:8px;margin-bottom:0.5rem;"><div id="progress-bar" style="background:var(--ethereal);height:100%;border-radius:6px;width:0%;transition:width 1.5s ease;"></div></div><div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:0.78rem;color:rgba(255,255,255,0.7);" id="progress-label">18 / 24 books read</span><button onclick="alert('Challenge feature coming soon!')" style="background:var(--white);color:var(--mocha-dark);border:none;border-radius:4px;padding:0.4rem 0.85rem;font-family:Montserrat,sans-serif;font-weight:700;font-size:0.78rem;cursor:pointer;">Join</button></div></div>
+    </aside>
   </main>
 
   <footer>
-    <div class="container">
-      <div class="footer-grid">
-        <div class="footer-col">
-          <h4>DecodeLabs</h4>
-          <p>Industrial Training Kit – Project 1</p>
-        </div>
-        <div class="footer-col">
-          <h4>Quick Links</h4>
-          <a href="index.html">Home</a>
-          <a href="projects.html">Projects</a>
-          <a href="training.html">Training</a>
-          <a href="contact.html">Contact</a>
-        </div>
-        <div class="footer-col">
-          <h4>Contact</h4>
-          <p>📞 +91 89330 06408</p>
-          <p>✉️ decodelabs.tech@gmail.com</p>
-          <p>🌐 www.decodelabs.tech</p>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>📍 Greater Lucknow, India | © 2026 DecodeLabs – All rights reserved.</p>
-      </div>
-    </div>
+    <div class="footer-top"><div class="footer-brand"><div class="footer-logo">Page<span>Turn</span></div><p>A warm, curated digital library for curious minds. Read freely, discover endlessly.</p></div><div class="footer-col"><h4>Explore</h4><ul><li><a href="new-arrivals.html">New Arrivals</a></li><li><a href="#">Bestsellers</a></li><li><a href="#">Free Books</a></li><li><a href="#">Collections</a></li></ul></div><div class="footer-col"><h4>Company</h4><ul><li><a href="#">About Us</a></li><li><a href="authors.html">Authors</a></li><li><a href="#">Blog</a></li><li><a href="#">Careers</a></li></ul></div><div class="footer-col"><h4>Support</h4><ul><li><a href="#">Help Center</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Use</a></li><li><a href="#">Contact</a></li></ul></div></div>
+    <div class="footer-bottom">© 2025 PageTurn Digital Library. Crafted with care.</div>
   </footer>
 
-  <script src="script.js"></script>
+  <script>
+    /* Book data & rendering (search uses navbar input) */
+    const books = [
+      { title: "The Atlas of Forgotten Skies", author: "Layla Hossain", genre: "Literary Fiction", cover: "🌌", bg: "#EBF0FA", rating: 4.8, reviews: 2340, badge: "new" },
+      { title: "Roots of the Silent Valley", author: "Omar Farooqi", genre: "Historical", cover: "🌿", bg: "#EAF3DE", rating: 4.6, reviews: 1820, badge: "free" },
+      { title: "The Midnight Algorithm", author: "Sara Chen", genre: "Science Fiction", cover: "🤖", bg: "#EDF5FB", rating: 4.9, reviews: 3100, badge: "premium" },
+      { title: "Letters from Lahore", author: "Nadia Siddiqui", genre: "Contemporary", cover: "✉️", bg: "#FEF3E2", rating: 4.7, reviews: 1560, badge: "new" },
+      { title: "When Rivers Remember", author: "Arjun Mehra", genre: "Drama", cover: "🌊", bg: "#F0EBFB", rating: 4.5, reviews: 980, badge: "free" },
+      { title: "The Cartographer's Secret", author: "Elena Vasquez", genre: "Mystery", cover: "🗺️", bg: "#FBF0F0", rating: 4.8, reviews: 2750, badge: "premium" }
+    ];
+    const trending = [
+      { title: "The Atlas of Forgotten Skies", author: "L. Hossain", cover: "🌌", bg: "#EBF0FA" },
+      { title: "Midnight Algorithm", author: "S. Chen", cover: "🤖", bg: "#EDF5FB" },
+      { title: "Letters from Lahore", author: "N. Siddiqui", cover: "✉️", bg: "#FEF3E2" },
+      { title: "Roots of the Silent Valley", author: "O. Farooqi", cover: "🌿", bg: "#EAF3DE" },
+      { title: "The Cartographer's Secret", author: "E. Vasquez", cover: "🗺️", bg: "#FBF0F0" }
+    ];
+    const badgeMap = { new: { cls: "badge-new", label: "New" }, free: { cls: "badge-free", label: "Free" }, premium: { cls: "badge-premium", label: "Premium" } };
+    function stars(r) { const full = Math.floor(r); const half = r - full >= 0.5 ? 1 : 0; return "★".repeat(full) + (half ? "½" : "") + "☆".repeat(5 - full - half); }
+    function renderBooks() {
+      const grid = document.getElementById("books-grid");
+      grid.innerHTML = books.map(b => { const b_ = badgeMap[b.badge]; return `<article class="book-card"><div class="book-cover" style="background:${b.bg};">${b.cover}</div><div class="book-info"><div class="book-genre">${b.genre}</div><div class="book-title">${b.title}</div><div class="book-author">by ${b.author}</div><div class="book-meta"><span class="stars">${stars(b.rating)}</span><span class="rating-count">${b.rating} (${b.reviews.toLocaleString()})</span><span class="book-badge ${b_.cls}">${b_.label}</span></div></div></article>`; }).join("");
+    }
+    function renderTrending() {
+      const list = document.getElementById("trending-list");
+      list.innerHTML = trending.map((t, i) => `<div class="trending-item"><span class="trend-rank">#${i+1}</span><div class="trend-cover" style="background:${t.bg};">${t.cover}</div><div class="trend-info"><div class="trend-title">${t.title}</div><div class="trend-author">${t.author}</div></div></div>`).join("");
+    }
+    function handleSearch() {
+      const q = document.getElementById("search-input").value.trim().toLowerCase();
+      if (!q) { renderBooks(); return; }
+      const filtered = books.filter(b => b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q) || b.genre.toLowerCase().includes(q));
+      const grid = document.getElementById("books-grid");
+      if (filtered.length === 0) { grid.innerHTML = `<p style="color:var(--text-muted);font-size:0.9rem;padding:1rem 0;">No books found for "<strong>${q}</strong>". Try a different search.</p>`; return; }
+      const origBooks = [...books];
+      books.length = 0; filtered.forEach(b => books.push(b)); renderBooks();
+      books.length = 0; origBooks.forEach(b => books.push(b));
+    }
+    document.getElementById("search-input").addEventListener("keydown", e => { if (e.key === "Enter") handleSearch(); });
+    function subscribeNewsletter() {
+      const email = document.getElementById("nl-email").value.trim();
+      const msg = document.getElementById("nl-msg");
+      if (!email || !email.includes("@")) { document.getElementById("nl-email").style.borderColor = "#D85A30"; return; }
+      document.getElementById("nl-email").style.borderColor = ""; document.getElementById("nl-email").value = "";
+      msg.style.display = "block"; setTimeout(() => msg.style.display = "none", 4000);
+    }
+    const hamburger = document.getElementById("hamburger"), mobileMenu = document.getElementById("mobile-menu");
+    hamburger.addEventListener("click", () => { const isOpen = mobileMenu.classList.toggle("open"); hamburger.setAttribute("aria-expanded", isOpen); });
+    setTimeout(() => { document.getElementById("progress-bar").style.width = "75%"; }, 600);
+    renderBooks(); renderTrending();
+  </script>
 </body>
 </html>
